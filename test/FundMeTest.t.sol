@@ -23,7 +23,7 @@ contract FundMeTest is Test {
         assertEq(fundMe.i_owner(), msg.sender);
     }
 
-    function testPriceFeedVersionisAccurate() public {
+    function testPriceFeedVersionisAccurate() public view{
         uint256 version = fundMe.getVersion();
         assertEq(version, 4);
     }
