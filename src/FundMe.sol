@@ -13,8 +13,8 @@ contract FundMe {
     address[] private s_funders;
 
     // Could we make this constant?  /* hint: no! We should make it immutable! */
-    address private /* immutable */ i_owner;
-    uint256 public constant MINIMUM_USD = 5 * 10 ** 18;
+    address private immutable i_owner;
+    uint256 public constant MINIMUM_USD = 5e18;
     AggregatorV3Interface private s_priceFeed;
 
     constructor(address priceFeed) {
@@ -23,7 +23,10 @@ contract FundMe {
     }
 
     function fund() public payable {
-        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
+        require(
+            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
+            "You need to spend more ETH!"
+        );
         // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
         s_addressToAmountFunded[msg.sender] += msg.value;
         s_funders.push(msg.sender);
@@ -39,14 +42,34 @@ contract FundMe {
         _;
     }
 
-    function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
+    function cheaperWithdraw() public onlyOwner {
+        uint256 funderLength = s_funders.length;
+        for (uint funderIndex = 0; funderIndex < funderLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
         s_funders = new address[](0);
 
-        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+        require(callSuccess, "Call failed");
+    }
+
+    function withdraw() public onlyOwner {
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < s_funders.length;
+            funderIndex++
+        ) {
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
+
+        (bool callSuccess, ) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
         require(callSuccess, "Call failed");
     }
 
@@ -61,7 +84,9 @@ contract FundMe {
     /**
      * View  / Pure functions (Getters)
      */
-    function getAddressToAmountFunded(address fundingAddress) external view returns (uint256) {
+    function getAddressToAmountFunded(
+        address fundingAddress
+    ) external view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 
