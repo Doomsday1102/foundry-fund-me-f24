@@ -13,7 +13,7 @@
 ## Quickstart
 
 ```
-git clone https://github.com/Cyfrin/foundry-fund-me-cu
+git clone https://github.com/Doomsday1102/foundry-fund-me-f24
 cd foundry-fund-me-cu
 make
 ```
@@ -29,7 +29,7 @@ If you can't or don't want to run and install locally, you can work with this re
 ## Deploy
 
 ```
-forge script script/DeployFundMe.s.sol
+forge script DeployFundMe
 ```
 
 ## Testing
@@ -53,7 +53,7 @@ or
 ```
 // Only run test functions matching the specified regex pattern.
 
-"forge test -m testFunctionName" is deprecated. Please use 
+"forge test -mt testFunctionName" is deprecated. Please use 
 
 forge test --match-test testFunctionName
 ```
@@ -138,23 +138,6 @@ To run code formatting:
 forge fmt
 ```
 
-# Additional Info:
-Some users were having a confusion that whether Chainlink-brownie-contracts is an official Chainlink repository or not. Here is the info.
-Chainlink-brownie-contracts is an official repo. The repository is owned and maintained by the chainlink team for this very purpose, and gets releases from the proper chainlink release process. You can see it's still the `smartcontractkit` org as well.
-
-https://github.com/smartcontractkit/chainlink-brownie-contracts
-
-## Let's talk about what "Official" means
-The "official" release process is that chainlink deploys it's packages to [npm](https://www.npmjs.com/package/@chainlink/contracts). So technically, even downloading directly from `smartcontractkit/chainlink` is wrong, because it could be using unreleased code.
-
-So, then you have two options:
-
-1. Download from NPM and have your codebase have dependencies foreign to foundry
-2. Download from the chainlink-brownie-contracts repo which already downloads from npm and then packages it nicely for you to use in foundry.
-## Summary
-1. That is an official repo maintained by the same org
-2. It downloads from the official release cycle `chainlink/contracts` use (npm) and packages it nicely for digestion from foundry.
-   
 
 # Thank you!
 
